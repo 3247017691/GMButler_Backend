@@ -19,6 +19,15 @@ public class CourseServiceImpl implements CourseService {
         this.courseMapper = courseMapper;
     }
 
+    /**
+     * 分页查询课程列表
+     * @param name
+     * @param subject
+     * @param target
+     * @param page
+     * @param size
+     * @return
+     */
     @Override
     public PageResult findCoursesByPage(String name, Integer subject, Integer target, Integer page, Integer size) {
         Page<Course> p = new Page<>(page, size);
@@ -29,5 +38,14 @@ public class CourseServiceImpl implements CourseService {
                 .eq(target != null, Course::getTarget, target);
         Page<Course> coursePage = courseMapper.selectPage(p, wrapper);
         return new PageResult<>(coursePage.getTotal(), coursePage.getRecords());
+    }
+
+    /**
+     * 删除课程
+     * @param id
+     */
+    @Override
+    public void deleteCourse(Integer id) {
+        courseMapper.deleteById(id);
     }
 }

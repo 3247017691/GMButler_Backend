@@ -5,6 +5,7 @@ import com.itheima.entity.PageResult;
 import com.itheima.service.CourseService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,5 +38,11 @@ public class CourseController {
     ){
         PageResult pageResult = courseService.findCoursesByPage(name, subject, target, page, size);
         return Result.success(pageResult);
+    }
+
+    @DeleteMapping("/courses/{id}")
+    public Result deleteCourse(Integer id){
+        courseService.deleteCourse(id);
+        return Result.success();
     }
 }
