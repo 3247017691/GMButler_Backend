@@ -1,14 +1,12 @@
 package com.itheima.controller;
 
 import com.itheima.common.Result;
+import com.itheima.entity.Course;
 import com.itheima.entity.PageResult;
 import com.itheima.service.CourseService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CourseController {
@@ -40,9 +38,26 @@ public class CourseController {
         return Result.success(pageResult);
     }
 
+    /**
+     * 删除课程
+     * @param id
+     * @return
+     */
     @DeleteMapping("/courses/{id}")
-    public Result deleteCourse(Integer id){
+    public Result deleteCourse(@PathVariable Integer id){
         courseService.deleteCourse(id);
+        return Result.success();
+    }
+
+
+    /**
+     * 添加课程
+     * @param course
+     * @return
+     */
+    @PostMapping("/courses")
+    public Result addCourse(@RequestBody Course course){
+        courseService.addCourse(course);
         return Result.success();
     }
 }

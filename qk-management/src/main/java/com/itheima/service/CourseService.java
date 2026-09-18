@@ -1,5 +1,6 @@
 package com.itheima.service;
 
+import com.itheima.entity.Course;
 import com.itheima.entity.PageResult;
 
 public interface CourseService {
@@ -20,4 +21,10 @@ public interface CourseService {
      * @param id
      */
     void deleteCourse(Integer id);
+
+    /**
+     * 添加课程
+     * @param course
+     */
+    void addCourse(Course course);
 }

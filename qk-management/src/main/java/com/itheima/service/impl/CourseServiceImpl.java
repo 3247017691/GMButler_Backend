@@ -10,6 +10,8 @@ import com.itheima.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class CourseServiceImpl implements CourseService {
     private final CourseMapper courseMapper;
@@ -48,4 +50,17 @@ public class CourseServiceImpl implements CourseService {
     public void deleteCourse(Integer id) {
         courseMapper.deleteById(id);
     }
+
+    /**
+     * 添加课程
+     * @param course
+     */
+    @Override
+    public void addCourse(Course course) {
+        course.setCreateTime(LocalDateTime.now());
+        course.setUpdateTime(LocalDateTime.now());
+        courseMapper.insert(course);
+    }
+
+
 }
