@@ -40,4 +40,10 @@ public interface DeptService {
      * @param id
      */
     void deleteById(Integer id);
+
+    /**
+     * 查询所有部门
+     * @return
+     */
+    Object listDept();
 }

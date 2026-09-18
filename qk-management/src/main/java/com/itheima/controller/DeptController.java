@@ -68,4 +68,9 @@ public class DeptController {
         deptService.deleteById(id);
         return Result.success();
     }
+
+    @GetMapping("/depts/list")
+    public Result listDept(){
+        return Result.success(deptService.listDept());
+    }
 }
