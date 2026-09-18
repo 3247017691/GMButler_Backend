@@ -45,5 +45,5 @@ public interface DeptService {
      * 查询所有部门
      * @return
      */
-    Object listDept();
+    Object findAllDept();
 }

@@ -36,6 +36,11 @@ public class Course {
     /**
      * 课程目标
      */
+    private String target;
+
+    /**
+     * 课程描述
+     */
     private String description;
 
     /**

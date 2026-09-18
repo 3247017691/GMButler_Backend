@@ -81,7 +81,7 @@ public class DeptServiceImpl implements DeptService {
      * @return
      */
     @Override
-    public Object listDept() {
+    public Object findAllDept() {
         return deptMapper.selectList(null);
     }
 }

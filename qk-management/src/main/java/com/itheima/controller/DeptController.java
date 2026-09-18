@@ -70,7 +70,7 @@ public class DeptController {
     }
 
     @GetMapping("/depts/list")
-    public Result listDept(){
-        return Result.success(deptService.listDept());
+    public Result findAllDept(){
+        return Result.success(deptService.findAllDept());
     }
 }
