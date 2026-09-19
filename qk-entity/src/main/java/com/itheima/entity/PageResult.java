@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * 分页查询结果封装类
+ * @param <T>
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
