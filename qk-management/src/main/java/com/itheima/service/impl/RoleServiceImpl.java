@@ -11,6 +11,8 @@ import com.itheima.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class RoleServiceImpl implements RoleService {
     private final RoleMapper roleMapper;
@@ -45,5 +47,48 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void deleteById(Long id) {
         roleMapper.deleteById(id);
+    }
+
+    /**
+     * 添加角色
+     * @param roleDTO
+     */
+    @Override
+    public void save(RoleDTO roleDTO) {
+        Role role = new Role();
+        role.setName(roleDTO.getName());
+        role.setLabel(roleDTO.getLabel());
+        role.setRemark(roleDTO.getRemark());
+        role.setCreateTime(LocalDateTime.now());
+        role.setUpdateTime(LocalDateTime.now());
+        roleMapper.insert(role);
+    }
+
+    /**
+     * 根据id查询
+     * @param id
+     * @return
+     */
+    @Override
+    public Role findById(Integer id) {
+        return roleMapper.selectById(id);
+    }
+
+    /**
+     * 修改角色
+     * @param role
+     */
+    @Override
+    public void update(Role role) {
+        roleMapper.updateById(role);
+    }
+
+    /**
+     * 查询所有角色
+     * @return
+     */
+    @Override
+    public Object list() {
+        return roleMapper.selectList(null);
     }
 }

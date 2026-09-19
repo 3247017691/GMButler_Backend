@@ -17,4 +17,29 @@ public interface RoleService{
      * @param id
      */
     void deleteById(Long id);
+
+    /**
+     * 添加角色
+     * @param roleDTO
+     */
+    void save(RoleDTO roleDTO);
+
+    /**
+     * 根据id查询
+     * @param id
+     * @return
+     */
+    Role findById(Integer id);
+
+    /**
+     * 修改角色
+     * @param role
+     */
+    void update(Role role);
+
+    /**
+     * 查询所有角色
+     * @return
+     */
+    Object list();
 }
