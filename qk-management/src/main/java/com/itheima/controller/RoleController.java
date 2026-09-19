@@ -5,52 +5,58 @@ import com.itheima.dto.RoleDTO;
 import com.itheima.entity.PageResult;
 import com.itheima.entity.Role;
 import com.itheima.service.RoleService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
-@RestController
-public class RoleController {
-    private final RoleService roleService;
+import java.time.LocalDateTime;
+import java.util.List;
 
+@RestController
+@RequestMapping("/roles")
+public class RoleController {
+
+    //注入业务层
     @Autowired
-    public RoleController(RoleService roleService) {
-        this.roleService = roleService;
-    }
+    private RoleService roleService;
 
     /**
-     * 根据条件查询分页数据
+     * 分页条件查询
      * @param roleDTO
      * @return
      */
-    @GetMapping("/roles")
+    @GetMapping
     public Result findByPageAndCondition(RoleDTO roleDTO) {
+        //1.接受前端参数
+        //2.参数复杂要学会封装参数
+        //3.调用service查询
         PageResult<Role> pb = roleService.findByPageAndCondition(roleDTO);
         //4.统一结果集然后再返回前端
         return pb != null ? Result.success(pb) : Result.error("没有查询到部门信息");
     }
+
 
     /**
      * 根据id删除
      * @param id
      * @return
      */
-    @DeleteMapping("/roles/{id}")
-    public Result deleteById(Long id) {
-        roleService.deleteById(id);
-        return Result.success();
+    @DeleteMapping("/{id}")
+    public Result deleteById(@PathVariable Integer id) {
+        boolean flag = roleService.removeById(id);
+        return flag ? Result.success("删除成功") : Result.error("删除失败");
     }
 
     /**
-     * 新增角色
-     * @param roleDTO
+     * 添加角色
+     * @param role
      * @return
      */
-    @PostMapping("/roles")
-    public Result save(RoleDTO roleDTO) {
-        roleService.save(roleDTO);
-        return Result.success();
+    @PostMapping
+    public Result add(@RequestBody Role role) {
+        role.setCreateTime(LocalDateTime.now());
+        role.setUpdateTime(LocalDateTime.now());
+        //调用service处理数据
+        return roleService.saveOrUpdate(role) ? Result.success("添加成功") : Result.error("添加失败");
     }
 
     /**
@@ -58,9 +64,13 @@ public class RoleController {
      * @param id
      * @return
      */
-    @GetMapping("/roles/{id}")
+    @GetMapping("/{id}")
     public Result findById(@PathVariable Integer id){
-        return Result.success(roleService.findById(id));
+
+        //调用service层完成工作即可
+        Role role = roleService.getById(id);
+        return  role == null ? Result.error("没有查询到部门信息") : Result.success(role);
+
     }
 
     /**
@@ -68,18 +78,23 @@ public class RoleController {
      * @param role
      * @return
      */
-    @PutMapping("/roles")
-    public Result update(@RequestBody Role role) {
-        roleService.update(role);
-        return Result.success();
+    @PutMapping
+    public Result update(@RequestBody Role role){
+        role.setUpdateTime(LocalDateTime.now());
+        //调用service层完成工作即可
+        boolean flag = roleService.saveOrUpdate(role);
+        return flag ? Result.success("修改成功") : Result.error("修改失败");
+
     }
 
     /**
-     * 查询所有角色
+     * 查询所有
      * @return
      */
-    @GetMapping("/roles/list")
-    public Result listRoles() {
-        return Result.success(roleService.list());
+
+    @GetMapping("/list")
+    public Result findAll(){
+        List<Role> list =  roleService.list();
+        return Result.success(list);
     }
 }

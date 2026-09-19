@@ -93,6 +93,11 @@ public class CourseServiceImpl implements CourseService {
         return courseMapper.selectList(null);
     }
 
+    /**
+     * 根据科目查询课程
+     * @param subject
+     * @return
+     */
     @Override
     public Object getCoursesBySubject(Integer subject) {
         return courseMapper.getCoursesBySubject(subject);
