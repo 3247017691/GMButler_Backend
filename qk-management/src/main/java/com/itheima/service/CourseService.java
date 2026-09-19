@@ -1,7 +1,10 @@
 package com.itheima.service;
 
+import com.itheima.common.Result;
 import com.itheima.entity.Course;
 import com.itheima.entity.PageResult;
+
+import java.util.List;
 
 public interface CourseService {
 
@@ -27,4 +30,30 @@ public interface CourseService {
      * @param course
      */
     void addCourse(Course course);
+
+    /**
+     * 根据id查询课程
+     * @param id
+     * @return
+     */
+    Course findById(Integer id);
+
+    /**
+     * 修改课程
+     * @param course
+     */
+    void updateCourse(Course course);
+
+    /**
+     * 查询所有课程
+     * @return
+     */
+    List<Course> findAll();
+
+    /**
+     *
+     * @param subject
+     * @return
+     */
+    Object getCoursesBySubject(Integer subject);
 }

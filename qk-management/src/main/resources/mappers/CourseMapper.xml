@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.mapper.CourseMapper">
+    <select id="getCoursesBySubject" resultType="java.lang.Object">
+        SELECT id, name, subject, credit, teacher_id
+        FROM course
+        <where>
+            <if test="subject != null and subject != ''">
+                subject LIKE CONCAT('%', #{subject}, '%')
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
+</mapper>

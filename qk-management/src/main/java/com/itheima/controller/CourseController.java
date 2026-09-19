@@ -60,4 +60,45 @@ public class CourseController {
         courseService.addCourse(course);
         return Result.success();
     }
+
+    /**
+     * 根据id查询课程
+     * @param id
+     * @return
+     */
+    @GetMapping("/courses/{id}")
+    public Result getCourse(@PathVariable Integer id){
+        Course course = courseService.findById(id);
+        return Result.success(course);
+    }
+
+    /**
+     * 修改课程
+     * @param course
+     * @return
+     */
+    @PutMapping("/courses")
+    public Result updateCourse(@RequestBody Course course){
+        courseService.updateCourse(course);
+        return Result.success();
+    }
+
+    /**
+     * 查询所有课程
+     * @return
+     */
+    @GetMapping("/courses/list")
+    public Result findAllCourse(){
+        return Result.success(courseService.findAll());
+    }
+
+    /**
+     * 根据科目查询课程
+     * @param subject
+     * @return
+     */
+    @GetMapping("/courses/subject/{subject}")
+    public Result getCoursesBySubject(@PathVariable Integer subject){
+        return Result.success(courseService.getCoursesBySubject(subject));
+    }
 }

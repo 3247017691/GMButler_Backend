@@ -3,6 +3,7 @@ package com.itheima.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.itheima.common.Result;
 import com.itheima.entity.Course;
 import com.itheima.entity.PageResult;
 import com.itheima.mapper.CourseMapper;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -60,6 +62,40 @@ public class CourseServiceImpl implements CourseService {
         course.setCreateTime(LocalDateTime.now());
         course.setUpdateTime(LocalDateTime.now());
         courseMapper.insert(course);
+    }
+
+    /**
+     * 根据id查询课程
+     * @param id
+     * @return
+     */
+    @Override
+    public Course findById(Integer id) {
+        return courseMapper.selectById(id);
+    }
+
+    /**
+     * 修改课程
+     * @param course
+     */
+    @Override
+    public void updateCourse(Course course) {
+        course.setUpdateTime(LocalDateTime.now());
+        courseMapper.updateById(course);
+    }
+
+    /**
+     * 查询所有课程
+     * @return
+     */
+    @Override
+    public List<Course> findAll() {
+        return courseMapper.selectList(null);
+    }
+
+    @Override
+    public Object getCoursesBySubject(Integer subject) {
+        return courseMapper.getCoursesBySubject(subject);
     }
 
 
