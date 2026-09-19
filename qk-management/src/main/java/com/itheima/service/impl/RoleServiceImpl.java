@@ -19,6 +19,12 @@ public class RoleServiceImpl implements RoleService {
     public RoleServiceImpl(RoleMapper roleMapper) {
         this.roleMapper = roleMapper;
     }
+
+    /**
+     * 根据条件查询分页数据
+     * @param roleDTO
+     * @return
+     */
     @Override
     public PageResult<Role> findByPageAndCondition(RoleDTO roleDTO) {
         Page<Role> page = new Page<>(roleDTO.getPage(), roleDTO.getPageSize());
@@ -30,5 +36,14 @@ public class RoleServiceImpl implements RoleService {
         page = roleMapper.selectPage(page, wrapper);
 
         return new PageResult<>(page.getTotal(), page.getRecords());
+    }
+
+    /**
+     * 根据id删除
+     * @param id
+     */
+    @Override
+    public void deleteById(Long id) {
+        roleMapper.deleteById(id);
     }
 }

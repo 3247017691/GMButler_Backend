@@ -11,4 +11,10 @@ public interface RoleService{
      * 条件分页查询角色，剩余简单的功能都可以使用IService提供的功能即可
      */
     PageResult<Role> findByPageAndCondition(RoleDTO roleDTO);
+
+    /**
+     * 根据id删除
+     * @param id
+     */
+    void deleteById(Long id);
 }

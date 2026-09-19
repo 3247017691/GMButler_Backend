@@ -7,6 +7,7 @@ import com.itheima.entity.Role;
 import com.itheima.service.RoleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,10 +21,26 @@ public class RoleController {
         this.roleService = roleService;
     }
 
+    /**
+     * 根据条件查询分页数据
+     * @param roleDTO
+     * @return
+     */
     @GetMapping("/roles")
     public Result findByPageAndCondition(RoleDTO roleDTO) {
         PageResult<Role> pb = roleService.findByPageAndCondition(roleDTO);
         //4.统一结果集然后再返回前端
         return pb != null ? Result.success(pb) : Result.error("没有查询到部门信息");
+    }
+
+    /**
+     * 根据id删除
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/roles/{id}")
+    public Result deleteById(Long id) {
+        roleService.deleteById(id);
+        return Result.success();
     }
 }
