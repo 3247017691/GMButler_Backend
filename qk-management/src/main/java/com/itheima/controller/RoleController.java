@@ -8,7 +8,6 @@ import com.itheima.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -53,8 +52,6 @@ public class RoleController {
      */
     @PostMapping
     public Result add(@RequestBody Role role) {
-        role.setCreateTime(LocalDateTime.now());
-        role.setUpdateTime(LocalDateTime.now());
         //调用service处理数据
         return roleService.saveOrUpdate(role) ? Result.success("添加成功") : Result.error("添加失败");
     }
@@ -80,7 +77,6 @@ public class RoleController {
      */
     @PutMapping
     public Result update(@RequestBody Role role){
-        role.setUpdateTime(LocalDateTime.now());
         //调用service层完成工作即可
         boolean flag = roleService.saveOrUpdate(role);
         return flag ? Result.success("修改成功") : Result.error("修改失败");
@@ -91,7 +87,6 @@ public class RoleController {
      * 查询所有
      * @return
      */
-
     @GetMapping("/list")
     public Result findAll(){
         List<Role> list =  roleService.list();

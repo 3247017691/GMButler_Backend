@@ -11,7 +11,6 @@ import com.itheima.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -59,8 +58,6 @@ public class CourseServiceImpl implements CourseService {
      */
     @Override
     public void addCourse(Course course) {
-        course.setCreateTime(LocalDateTime.now());
-        course.setUpdateTime(LocalDateTime.now());
         courseMapper.insert(course);
     }
 
@@ -80,7 +77,6 @@ public class CourseServiceImpl implements CourseService {
      */
     @Override
     public void updateCourse(Course course) {
-        course.setUpdateTime(LocalDateTime.now());
         courseMapper.updateById(course);
     }
 
