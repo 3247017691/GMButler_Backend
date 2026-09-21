@@ -27,4 +27,10 @@ public interface UserService extends IService<User> {
      * @return
      */
     List<User> getUsersByDeptId(Long deptId);
+
+    /**
+     * 添加用户
+     * @param user
+     */
+    void addUser(User user);
 }

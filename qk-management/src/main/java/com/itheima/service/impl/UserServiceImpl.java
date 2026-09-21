@@ -1,7 +1,6 @@
 package com.itheima.service.impl;
 
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.itheima.dto.UserDTO;
@@ -29,17 +28,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public PageResult<User> getUsers(UserDTO userDTO) {
-        Page<User> page = new Page<>(userDTO.getPage(), userDTO.getPageSize());
+        Page<User> pageInfo = new Page<>(userDTO.getPage(), userDTO.getPageSize());
 
-        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(userDTO.getName()), User::getName, userDTO.getName())
-            .eq(StrUtil.isNotBlank(userDTO.getPhone()), User::getPhone, userDTO.getPhone())
-            .eq(userDTO.getStatus() != null, User::getStatus, userDTO.getStatus())
-            .eq(userDTO.getDeptId() != null, User::getDeptId, userDTO.getDeptId());
+        pageInfo = userMapper.getUsers(pageInfo, userDTO);
 
-        page(page, wrapper);
-
-        return new PageResult<>(page.getTotal(), page.getRecords());
+        return new PageResult<>(pageInfo.getTotal(), pageInfo.getRecords());
     }
 
     /**
@@ -61,5 +54,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public List<User> getUsersByDeptId(Long deptId) {
         return List.of();
+    }
+
+    @Override
+    public void addUser(User user) {
+        user.setPassword(DigestUtil.md5Hex(user.getPassword() + "123"));
+
+        userMapper.insert(user);
     }
 }
