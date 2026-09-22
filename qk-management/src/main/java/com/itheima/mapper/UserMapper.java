@@ -31,4 +31,11 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     List<User> getUsersByDeptId(Long deptId);
+
+    /**
+     * 根据用户名查询用户
+     * @param username
+     * @return
+     */
+    User selectByUsername(String username);
 }

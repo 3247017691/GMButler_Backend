@@ -25,4 +25,15 @@ public class GlobalExceptionHandler {
         System.out.println("arr[1] = " + arr[1]);
         return Result.error(arr[1] + " 已经存在了!");
     }
+
+    /**
+     * 业务异常处理
+     * @param e
+     * @return
+     */
+    @ExceptionHandler
+    public Result handleBizException(BizException e){
+        log.error("发生业务异常", e);
+        return Result.error(e.getMessage());
+    }
 }

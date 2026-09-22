@@ -90,4 +90,10 @@ public class User {
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+
+    /**
+     * 角色标签
+     */
+    @TableField(exist = false)
+    private String roleLabel;
 }

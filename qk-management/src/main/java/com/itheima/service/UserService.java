@@ -1,9 +1,11 @@
 package com.itheima.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.itheima.dto.LoginUserDTO;
 import com.itheima.dto.UserDTO;
 import com.itheima.entity.PageResult;
 import com.itheima.entity.User;
+import com.itheima.vo.LoginResultVO;
 
 import java.util.List;
 
@@ -33,4 +35,11 @@ public interface UserService extends IService<User> {
      * @param user
      */
     void addUser(User user);
+
+    /**
+     * 用户登录
+     * @param dto
+     * @return
+     */
+    LoginResultVO login(LoginUserDTO dto);
 }
