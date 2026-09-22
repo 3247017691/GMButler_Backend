@@ -14,6 +14,12 @@ import org.springframework.web.servlet.ModelAndView;
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
 
+    private final JwtUtil jwtUtil;
+
+    public LoginInterceptor(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
         System.out.println("afterCompletion....");
@@ -36,7 +42,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
 
         try {
-            JwtUtil.parseToken(jwt);
+            jwtUtil.parseToken(jwt);
         } catch (Exception e) {
             log.info("jwt令牌解析异常, 返回错误结果");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

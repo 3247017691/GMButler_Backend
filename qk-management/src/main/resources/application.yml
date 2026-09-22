@@ -23,9 +23,13 @@ mybatis-plus:
       id-type: auto # 全局主键策略 数据库自增
   mapper-locations: classpath*:/mappers/*Mapper.xml # 映射文件位置
 
-  qk:
-    oss:
-      endpoint: oss-cn-beijing.aliyuncs.com
-      bucketName: moning
-      accessKeyId: ${OSS_ACCESS_KEY_ID:}
-      accessKeySecret: ${OSS_ACCESS_KEY_SECRET:}
+#自定义配置
+qk:
+  oss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    bucketName: moning
+    accessKeyId: ${OSS_ACCESS_KEY_ID:}
+    accessKeySecret: ${OSS_ACCESS_KEY_SECRET:}
+  #JWT配置
+  jwt:
+    secret: ${JWT_SECRET:}

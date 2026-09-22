@@ -24,10 +24,12 @@ import java.util.Map;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     private final UserMapper userMapper;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public UserServiceImpl(UserMapper userMapper) {
+    public UserServiceImpl(UserMapper userMapper, JwtUtil jwtUtil) {
         this.userMapper = userMapper;
+        this.jwtUtil = jwtUtil;
     }
 
     /**
@@ -92,7 +94,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userInDb.getId());
         claims.put("username", userInDb.getName());
-        String token = JwtUtil.generateToken(claims);
+        String token = jwtUtil.generateToken(claims);
 
         LoginResultVO vo = new LoginResultVO();
         vo.setId(userInDb.getId());
