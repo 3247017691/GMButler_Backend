@@ -39,11 +39,6 @@ public class LoginResultVO {
     private String token;
 
     /**
-     * 密码
-     */
-    private String password;
-
-    /**
      * 状态
      */
     private Integer status;
