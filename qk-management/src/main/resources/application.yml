@@ -5,6 +5,13 @@ spring:
     url: jdbc:mysql://localhost:3306/qk?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true&useSSL=false
     username: root
     password: ${DB_PASSWORD:}
+  # 配置文件上传大小
+  servlet:
+    multipart:
+      # 每个上传文件的大小限制
+      max-file-size: 10MB
+      # 一次请求的大小限制，一次请求发送给后端的总大小限制。 max-file-size<=max-request-size
+      max-request-size: 10MB
 
 #mybatis-plus配置
 mybatis-plus:
@@ -15,3 +22,10 @@ mybatis-plus:
     db-config:
       id-type: auto # 全局主键策略 数据库自增
   mapper-locations: classpath*:/mappers/*Mapper.xml # 映射文件位置
+
+  qk:
+    oss:
+      endpoint: oss-cn-beijing.aliyuncs.com
+      bucketName: moning
+      accessKeyId: ${OSS_ACCESS_KEY_ID:}
+      accessKeySecret: ${OSS_ACCESS_KEY_SECRET:}

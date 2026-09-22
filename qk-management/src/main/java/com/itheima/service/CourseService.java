@@ -55,5 +55,5 @@ public interface CourseService {
      * @param subject
      * @return
      */
-    Object getCoursesBySubject(Integer subject);
+    List<Course> getCoursesBySubject(Integer subject);
 }

@@ -95,7 +95,7 @@ public class CourseServiceImpl implements CourseService {
      * @return
      */
     @Override
-    public Object getCoursesBySubject(Integer subject) {
+    public List<Course> getCoursesBySubject(Integer subject) {
         return courseMapper.getCoursesBySubject(subject);
     }
 

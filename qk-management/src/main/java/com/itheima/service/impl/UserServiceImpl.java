@@ -43,7 +43,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public List<User> getUsersByRoleLabel(String roleLabel) {
 
-        return List.of();
+        return userMapper.getUsersByRoleLabel(roleLabel);
     }
 
     /**
@@ -53,9 +53,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public List<User> getUsersByDeptId(Long deptId) {
-        return List.of();
+        return userMapper.getUsersByDeptId(deptId);
     }
 
+    /**
+     * 添加用户
+     * @param user
+     */
     @Override
     public void addUser(User user) {
         user.setPassword(DigestUtil.md5Hex(user.getPassword() + "123"));
