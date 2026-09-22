@@ -48,6 +48,7 @@
             <groupId>com.itheima</groupId>
             <artifactId>qk-entity</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>
