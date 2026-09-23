@@ -3,6 +3,7 @@ package com.itheima.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.itheima.context.UserContext;
 import com.itheima.dto.ClueDTO;
 import com.itheima.dto.ClueFalseDTO;
 import com.itheima.dto.ClueFollowDTO;
@@ -70,13 +71,43 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
     }
 
     /**
+     * 新增线索（仅管理员）
+     *
+     * @param clue
+     */
+    @Override
+    public void addClue(Clue clue) {
+        requireAdmin();
+        save(clue);
+    }
+
+    /**
+     * 删除线索（仅管理员）
+     *
+     * @param id
+     */
+    @Override
+    public void deleteClue(Integer id) {
+        requireAdmin();
+        boolean flag = removeById(id);
+        if (!flag) {
+            throw new BizException("删除失败");
+        }
+    }
+
+    /**
      * 条件分页查询线索列表
+     * 管理员可查看全部线索；负责人强制按当前登录用户过滤，仅能看到自己负责的线索
      *
      * @param clueDTO
      * @return
      */
     @Override
     public PageResult<Clue> findByPageAndCondition(ClueDTO clueDTO) {
+        if (!UserContext.isAdmin()) {
+            clueDTO.setUserId(UserContext.getId());
+        }
+
         Page<Clue> pageInfo = new Page<>(clueDTO.getPage(), clueDTO.getPageSize());
 
         pageInfo = baseMapper.findByPageAndCondition(pageInfo, clueDTO);
@@ -85,13 +116,15 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
     }
 
     /**
-     * 条件分页查询线索池列表
+     * 条件分页查询线索池列表（仅管理员）
      *
      * @param clueDTO
      * @return
      */
     @Override
     public PageResult<Clue> findPoolByPageAndCondition(ClueDTO clueDTO) {
+        requireAdmin();
+
         Page<Clue> pageInfo = new Page<>(clueDTO.getPage(), clueDTO.getPageSize());
 
         pageInfo = baseMapper.findPoolByPageAndCondition(pageInfo, clueDTO);
@@ -100,7 +133,7 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
     }
 
     /**
-     * 根据ID查询线索详情（含跟进记录）
+     * 根据ID查询线索详情（含跟进记录），负责人仅能看到自己负责的线索
      *
      * @param id
      * @return
@@ -111,6 +144,9 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
         if (clue == null) {
             throw new BizException("没有查询到线索信息");
         }
+        if (!UserContext.isAdmin()) {
+            requireOwner(clue);
+        }
 
         clue.setTrackRecords(clueTrackRecordMapper.findByClueId(id));
 
@@ -118,13 +154,15 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
     }
 
     /**
-     * 为指定用户分配线索：线索状态变为待跟进
+     * 为指定用户分配线索：线索状态变为待跟进（仅管理员）
      *
      * @param clueId
      * @param userId
      */
     @Override
     public void assign(Integer clueId, Integer userId) {
+        requireAdmin();
+
         Clue clueInDb = getById(clueId);
         if (clueInDb == null) {
             throw new BizException("没有查询到线索信息");
@@ -144,7 +182,7 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
     }
 
     /**
-     * 跟进线索：更新线索并新增一条跟进记录
+     * 跟进线索：更新线索并新增一条跟进记录（仅线索负责人）
      *
      * @param clueFollowDTO
      */
@@ -155,9 +193,7 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
         if (clueInDb == null) {
             throw new BizException("没有查询到线索信息");
         }
-        if (clueInDb.getUserId() == null) {
-            throw new BizException("线索暂未分配，无法跟进");
-        }
+        requireOwner(clueInDb);
         if (!isFollowableStatus(clueInDb.getStatus())) {
             throw new BizException("当前线索状态不允许跟进");
         }
@@ -180,7 +216,7 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
     }
 
     /**
-     * 伪线索处理：线索状态变为伪线索并新增一条伪线索记录
+     * 伪线索处理：线索状态变为伪线索并新增一条伪线索记录（仅线索负责人）
      *
      * @param id
      * @param clueFalseDTO
@@ -192,9 +228,7 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
         if (clueInDb == null) {
             throw new BizException("没有查询到线索信息");
         }
-        if (clueInDb.getUserId() == null) {
-            throw new BizException("线索暂未分配，无法标记为伪线索");
-        }
+        requireOwner(clueInDb);
         if (!isFollowableStatus(clueInDb.getStatus())) {
             throw new BizException("当前线索状态不允许标记为伪线索");
         }
@@ -216,7 +250,7 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
     }
 
     /**
-     * 转商机处理：线索状态变为转为商机并新增一条商机数据
+     * 转商机处理：线索状态变为转为商机并新增一条商机数据（仅线索负责人）
      *
      * @param id
      */
@@ -227,6 +261,7 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
         if (clueInDb == null) {
             throw new BizException("没有查询到线索信息");
         }
+        requireOwner(clueInDb);
 
         // 条件更新，保证并发下同一条线索只会成功转为商机一次
         boolean updated = lambdaUpdate()
@@ -255,6 +290,25 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
      */
     private boolean isFinalStatus(Integer status) {
         return Integer.valueOf(STATUS_FALSE).equals(status) || Integer.valueOf(STATUS_CONVERT_BUSINESS).equals(status);
+    }
+
+    /**
+     * 校验当前用户为管理员
+     */
+    private void requireAdmin() {
+        if (!UserContext.isAdmin()) {
+            throw new BizException("只有管理员可以执行该操作");
+        }
+    }
+
+    /**
+     * 校验当前用户为线索负责人
+     */
+    private void requireOwner(Clue clueInDb) {
+        Integer userId = clueInDb.getUserId();
+        if (userId == null || !userId.equals(UserContext.getId())) {
+            throw new BizException("只能操作自己负责的线索");
+        }
     }
 
     /**

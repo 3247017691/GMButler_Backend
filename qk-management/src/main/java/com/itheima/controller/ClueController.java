@@ -62,15 +62,15 @@ public class ClueController {
     }
 
     /**
-     * 新增线索
+     * 新增线索（仅管理员）
      *
      * @param clue
      * @return
      */
     @PostMapping
     public Result saveClue(@RequestBody Clue clue) {
-        boolean flag = clueService.save(clue);
-        return flag ? Result.success() : Result.error("添加失败");
+        clueService.addClue(clue);
+        return Result.success();
     }
 
     /**
@@ -125,14 +125,14 @@ public class ClueController {
     }
 
     /**
-     * 删除线索
+     * 删除线索（仅管理员）
      *
      * @param id
      * @return
      */
     @DeleteMapping("/{id}")
     public Result deleteClue(@PathVariable Integer id) {
-        boolean flag = clueService.removeById(id);
-        return flag ? Result.success() : Result.error("删除失败");
+        clueService.deleteClue(id);
+        return Result.success();
     }
 }

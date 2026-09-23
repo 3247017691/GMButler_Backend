@@ -94,6 +94,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userInDb.getId());
         claims.put("username", userInDb.getName());
+        claims.put("roleLabel", userInDb.getRoleLabel());
         String token = jwtUtil.generateToken(claims);
 
         LoginResultVO vo = new LoginResultVO();

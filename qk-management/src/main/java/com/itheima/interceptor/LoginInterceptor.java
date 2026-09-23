@@ -1,7 +1,9 @@
 package com.itheima.interceptor;
 
 import cn.hutool.core.util.StrUtil;
+import com.itheima.context.UserContext;
 import com.itheima.utils.JwtUtil;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
-        System.out.println("afterCompletion....");
+        UserContext.clear();
     }
 
     @Override
@@ -42,7 +44,12 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
 
         try {
-            jwtUtil.parseToken(jwt);
+            Claims claims = jwtUtil.parseToken(jwt);
+
+            Integer id = claims.get("id", Integer.class);
+            String username = claims.get("username", String.class);
+            String roleLabel = claims.get("roleLabel", String.class);
+            UserContext.set(new UserContext.CurrentUser(id, username, roleLabel));
         } catch (Exception e) {
             log.info("jwt令牌解析异常, 返回错误结果");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
