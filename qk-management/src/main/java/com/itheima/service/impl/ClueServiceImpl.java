@@ -44,6 +44,11 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
     private static final int STATUS_WAIT_FOLLOW = 2;
 
     /**
+      * 线索状态：跟进中
+     */
+    private static final int STATUS_FOLLOWING = 3;
+
+    /**
      * 线索状态：伪线索
      */
     private static final int STATUS_FALSE = 4;
@@ -120,8 +125,12 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
      */
     @Override
     public void assign(Integer clueId, Integer userId) {
-        if (getById(clueId) == null) {
+        Clue clueInDb = getById(clueId);
+        if (clueInDb == null) {
             throw new BizException("没有查询到线索信息");
+        }
+        if (isFinalStatus(clueInDb.getStatus())) {
+            throw new BizException("当前线索状态不允许分配");
         }
         if (userMapper.selectById(userId) == null) {
             throw new BizException("没有查询到用户信息");
@@ -146,17 +155,22 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
         if (clueInDb == null) {
             throw new BizException("没有查询到线索信息");
         }
-        if (clueFollowDTO.getUserId() == null) {
+        if (clueInDb.getUserId() == null) {
             throw new BizException("线索暂未分配，无法跟进");
+        }
+        if (!isFollowableStatus(clueInDb.getStatus())) {
+            throw new BizException("当前线索状态不允许跟进");
         }
 
         Clue clue = new Clue();
         BeanUtil.copyProperties(clueFollowDTO, clue);
+        // 归属人以后端数据为准，避免请求体中的快照值覆盖
+        clue.setUserId(clueInDb.getUserId());
         updateById(clue);
 
         ClueTrackRecord trackRecord = new ClueTrackRecord();
         trackRecord.setClueId(clueFollowDTO.getId());
-        trackRecord.setUserId(clueFollowDTO.getUserId());
+        trackRecord.setUserId(clueInDb.getUserId());
         trackRecord.setSubject(clueFollowDTO.getSubject());
         trackRecord.setLevel(clueFollowDTO.getLevel());
         trackRecord.setRecord(clueFollowDTO.getRecord());
@@ -180,6 +194,9 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
         }
         if (clueInDb.getUserId() == null) {
             throw new BizException("线索暂未分配，无法标记为伪线索");
+        }
+        if (!isFollowableStatus(clueInDb.getStatus())) {
+            throw new BizException("当前线索状态不允许标记为伪线索");
         }
 
         Clue clue = new Clue();
@@ -210,14 +227,16 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
         if (clueInDb == null) {
             throw new BizException("没有查询到线索信息");
         }
-        if (Integer.valueOf(STATUS_CONVERT_BUSINESS).equals(clueInDb.getStatus())) {
+
+        // 条件更新，保证并发下同一条线索只会成功转为商机一次
+        boolean updated = lambdaUpdate()
+                .eq(Clue::getId, id)
+                .ne(Clue::getStatus, STATUS_CONVERT_BUSINESS)
+                .set(Clue::getStatus, STATUS_CONVERT_BUSINESS)
+                .update();
+        if (!updated) {
             throw new BizException("该线索已转为商机，请勿重复操作");
         }
-
-        Clue clue = new Clue();
-        clue.setId(id);
-        clue.setStatus(STATUS_CONVERT_BUSINESS);
-        updateById(clue);
 
         Business business = new Business();
         BeanUtil.copyProperties(clueInDb, business);
@@ -226,5 +245,25 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
         // 线索已有归属人时商机直接进入待跟进，否则进入商机池待分配
         business.setStatus(clueInDb.getUserId() == null ? STATUS_WAIT_ALLOT : STATUS_WAIT_FOLLOW);
         businessMapper.insert(business);
+    }
+
+    /**
+     * 是否为终态（伪线索或已转商机），终态线索不允许再分配/跟进
+     *
+     * @param status
+     * @return
+     */
+    private boolean isFinalStatus(Integer status) {
+        return Integer.valueOf(STATUS_FALSE).equals(status) || Integer.valueOf(STATUS_CONVERT_BUSINESS).equals(status);
+    }
+
+    /**
+     * 是否为可跟进的进行中状态（待跟进或跟进中）
+     *
+     * @param status
+     * @return
+     */
+    private boolean isFollowableStatus(Integer status) {
+        return Integer.valueOf(STATUS_WAIT_FOLLOW).equals(status) || Integer.valueOf(STATUS_FOLLOWING).equals(status);
     }
 }

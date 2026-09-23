@@ -13,7 +13,10 @@ import org.springframework.context.annotation.Configuration;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.TimeZone;
 
 /**
@@ -46,7 +49,13 @@ public class JacksonConfig {
                         return null;
                     }
                     if (text.contains("T")) {
-                        return LocalDateTime.parse(text, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                        try {
+                            return LocalDateTime.parse(text, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                        } catch (DateTimeParseException e) {
+                            // 兼容带时区偏移的 ISO 格式（如 2026-09-23T10:00:00Z、+08:00），统一转为东八区本地时间
+                            return OffsetDateTime.parse(text, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                                    .atZoneSameInstant(ZoneId.of("GMT+8")).toLocalDateTime();
+                        }
                     }
                     return LocalDateTime.parse(text, dateTimeFormatter);
                 }
