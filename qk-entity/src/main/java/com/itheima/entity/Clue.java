@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 线索实体类
@@ -98,4 +99,22 @@ public class Clue {
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+
+    /**
+     * 归属人姓名（关联用户表查询，非表字段）
+     */
+    @TableField(exist = false)
+    private String assignName;
+
+    /**
+     * 来源活动名称（关联活动表查询，非表字段）
+     */
+    @TableField(exist = false)
+    private String activityName;
+
+    /**
+     * 跟进记录列表（关联线索跟进记录表查询，非表字段）
+     */
+    @TableField(exist = false)
+    private List<ClueTrackRecord> trackRecords;
 }

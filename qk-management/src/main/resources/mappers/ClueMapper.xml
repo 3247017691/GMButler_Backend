@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.mapper.ClueMapper">
+    <!--    线索分页条件查询    -->
+    <select id="findByPageAndCondition" resultType="com.itheima.entity.Clue">
+        SELECT c.*, u.name AS assign_name FROM clue AS c
+        LEFT JOIN user AS u ON c.user_id = u.id
+        <where>
+            <if test="clueDTO.clueId != null">
+                AND c.id = #{clueDTO.clueId}
+            </if>
+            <if test="clueDTO.name != null and clueDTO.name != ''">
+                AND c.name LIKE CONCAT('%', #{clueDTO.name}, '%')
+            </if>
+            <if test="clueDTO.phone != null and clueDTO.phone != ''">
+                AND c.phone LIKE CONCAT('%', #{clueDTO.phone}, '%')
+            </if>
+            <if test="clueDTO.status != null">
+                AND c.status = #{clueDTO.status}
+            </if>
+            <if test="clueDTO.channel != null">
+                AND c.channel = #{clueDTO.channel}
+            </if>
+            <if test="clueDTO.activityId != null">
+                AND c.activity_id = #{clueDTO.activityId}
+            </if>
+            <if test="clueDTO.userId != null">
+                AND c.user_id = #{clueDTO.userId}
+            </if>
+            <if test="clueDTO.assignName != null and clueDTO.assignName != ''">
+                AND u.name LIKE CONCAT('%', #{clueDTO.assignName}, '%')
+            </if>
+            <if test="clueDTO.subject != null">
+                AND c.subject = #{clueDTO.subject}
+            </if>
+            <if test="clueDTO.level != null">
+                AND c.level = #{clueDTO.level}
+            </if>
+        </where>
+        ORDER BY c.id DESC
+    </select>
+
+    <!--    线索池分页条件查询    -->
+    <select id="findPoolByPageAndCondition" resultType="com.itheima.entity.Clue">
+        SELECT c.*, a.name AS activity_name FROM clue AS c
+        LEFT JOIN activity AS a ON c.activity_id = a.id
+        <where>
+            AND c.status = 1
+            <if test="clueDTO.clueId != null">
+                AND c.id = #{clueDTO.clueId}
+            </if>
+            <if test="clueDTO.phone != null and clueDTO.phone != ''">
+                AND c.phone LIKE CONCAT('%', #{clueDTO.phone}, '%')
+            </if>
+            <if test="clueDTO.channel != null">
+                AND c.channel = #{clueDTO.channel}
+            </if>
+        </where>
+        ORDER BY c.id DESC
+    </select>
+
+    <!--    根据ID查询线索详情    -->
+    <select id="findDetailById" resultType="com.itheima.entity.Clue">
+        SELECT c.*, u.name AS assign_name FROM clue AS c
+        LEFT JOIN user AS u ON c.user_id = u.id
+        WHERE c.id = #{id}
+    </select>
+</mapper>

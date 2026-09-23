@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.mapper.ClueTrackRecordMapper">
+    <!--    根据线索ID查询跟进记录列表    -->
+    <select id="findByClueId" resultType="com.itheima.entity.ClueTrackRecord">
+        SELECT t.*, u.name AS assign_name FROM clue_track_record AS t
+        LEFT JOIN user AS u ON t.user_id = u.id
+        WHERE t.clue_id = #{clueId}
+        ORDER BY t.create_time, t.id
+    </select>
+</mapper>
