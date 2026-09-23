@@ -11,6 +11,9 @@ import com.itheima.entity.Business;
 import com.itheima.entity.Clue;
 import com.itheima.entity.ClueTrackRecord;
 import com.itheima.entity.PageResult;
+import com.itheima.enums.BusinessStatus;
+import com.itheima.enums.ClueStatus;
+import com.itheima.enums.ClueTrackType;
 import com.itheima.exception.BizException;
 import com.itheima.mapper.BusinessMapper;
 import com.itheima.mapper.ClueMapper;
@@ -23,41 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements ClueService {
-
-    /**
-     * 跟进记录类型：正常跟进
-     */
-    private static final int TRACK_TYPE_FOLLOW = 1;
-
-    /**
-     * 跟进记录类型：伪线索
-     */
-    private static final int TRACK_TYPE_FALSE = 2;
-
-    /**
-     * 线索状态：待分配
-     */
-    private static final int STATUS_WAIT_ALLOT = 1;
-
-    /**
-     * 线索状态：待跟进
-     */
-    private static final int STATUS_WAIT_FOLLOW = 2;
-
-    /**
-      * 线索状态：跟进中
-     */
-    private static final int STATUS_FOLLOWING = 3;
-
-    /**
-     * 线索状态：伪线索
-     */
-    private static final int STATUS_FALSE = 4;
-
-    /**
-     * 线索状态：转为商机
-     */
-    private static final int STATUS_CONVERT_BUSINESS = 5;
 
     private final ClueTrackRecordMapper clueTrackRecordMapper;
     private final BusinessMapper businessMapper;
@@ -177,7 +145,7 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
         Clue clue = new Clue();
         clue.setId(clueId);
         clue.setUserId(userId);
-        clue.setStatus(STATUS_WAIT_FOLLOW);
+        clue.setStatus(ClueStatus.WAIT_FOLLOW.getCode());
         updateById(clue);
     }
 
@@ -211,7 +179,7 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
         trackRecord.setLevel(clueFollowDTO.getLevel());
         trackRecord.setRecord(clueFollowDTO.getRecord());
         trackRecord.setNextTime(clueFollowDTO.getNextTime());
-        trackRecord.setType(TRACK_TYPE_FOLLOW);
+        trackRecord.setType(ClueTrackType.FOLLOW.getCode());
         clueTrackRecordMapper.insert(trackRecord);
     }
 
@@ -235,7 +203,7 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
 
         Clue clue = new Clue();
         clue.setId(id);
-        clue.setStatus(STATUS_FALSE);
+        clue.setStatus(ClueStatus.FALSE.getCode());
         updateById(clue);
 
         ClueTrackRecord trackRecord = new ClueTrackRecord();
@@ -244,7 +212,7 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
         trackRecord.setSubject(clueInDb.getSubject());
         trackRecord.setLevel(clueInDb.getLevel());
         trackRecord.setRecord(clueFalseDTO.getRemark());
-        trackRecord.setType(TRACK_TYPE_FALSE);
+        trackRecord.setType(ClueTrackType.FALSE.getCode());
         trackRecord.setFalseReason(clueFalseDTO.getReason());
         clueTrackRecordMapper.insert(trackRecord);
     }
@@ -266,8 +234,8 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
         // 条件更新，保证并发下同一条线索只会成功转为商机一次
         boolean updated = lambdaUpdate()
                 .eq(Clue::getId, id)
-                .ne(Clue::getStatus, STATUS_CONVERT_BUSINESS)
-                .set(Clue::getStatus, STATUS_CONVERT_BUSINESS)
+                .ne(Clue::getStatus, ClueStatus.CONVERT_BUSINESS.getCode())
+                .set(Clue::getStatus, ClueStatus.CONVERT_BUSINESS.getCode())
                 .update();
         if (!updated) {
             throw new BizException("该线索已转为商机，请勿重复操作");
@@ -278,7 +246,8 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
         business.setId(null);
         business.setClueId(clueInDb.getId());
         // 线索已有归属人时商机直接进入待跟进，否则进入商机池待分配
-        business.setStatus(clueInDb.getUserId() == null ? STATUS_WAIT_ALLOT : STATUS_WAIT_FOLLOW);
+        BusinessStatus businessStatus = clueInDb.getUserId() == null ? BusinessStatus.WAIT_ALLOT : BusinessStatus.WAIT_FOLLOW;
+        business.setStatus(businessStatus.getCode());
         businessMapper.insert(business);
     }
 
@@ -289,7 +258,8 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
      * @return
      */
     private boolean isFinalStatus(Integer status) {
-        return Integer.valueOf(STATUS_FALSE).equals(status) || Integer.valueOf(STATUS_CONVERT_BUSINESS).equals(status);
+        ClueStatus clueStatus = ClueStatus.of(status);
+        return clueStatus == ClueStatus.FALSE || clueStatus == ClueStatus.CONVERT_BUSINESS;
     }
 
     /**
@@ -318,6 +288,7 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
      * @return
      */
     private boolean isFollowableStatus(Integer status) {
-        return Integer.valueOf(STATUS_WAIT_FOLLOW).equals(status) || Integer.valueOf(STATUS_FOLLOWING).equals(status);
+        ClueStatus clueStatus = ClueStatus.of(status);
+        return clueStatus == ClueStatus.WAIT_FOLLOW || clueStatus == ClueStatus.FOLLOWING;
     }
 }
