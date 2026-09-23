@@ -172,13 +172,10 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
         clue.setUserId(clueInDb.getUserId());
         updateById(clue);
 
-        ClueTrackRecord trackRecord = new ClueTrackRecord();
+        // DTO 同名字段直接拷贝；DTO 的 id 是线索ID需映射为 clueId，userId 以后端数据为准
+        ClueTrackRecord trackRecord = BeanUtil.copyProperties(clueFollowDTO, ClueTrackRecord.class, "id", "userId");
         trackRecord.setClueId(clueFollowDTO.getId());
         trackRecord.setUserId(clueInDb.getUserId());
-        trackRecord.setSubject(clueFollowDTO.getSubject());
-        trackRecord.setLevel(clueFollowDTO.getLevel());
-        trackRecord.setRecord(clueFollowDTO.getRecord());
-        trackRecord.setNextTime(clueFollowDTO.getNextTime());
         trackRecord.setType(ClueTrackType.FOLLOW.getCode());
         clueTrackRecordMapper.insert(trackRecord);
     }
