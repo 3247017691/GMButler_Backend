@@ -65,4 +65,16 @@
         LEFT JOIN user AS u ON c.user_id = u.id
         WHERE c.id = #{id}
     </select>
+
+    <!--    线索概览统计：总数与各状态数量，状态取值见 ClueStatus    -->
+    <select id="getClueOverviewData" resultType="com.itheima.vo.OverviewVO">
+        SELECT
+            COUNT(*) AS clue_total,
+            COUNT(CASE WHEN status = 1 THEN 1 END) AS clue_wait_allot,
+            COUNT(CASE WHEN status = 2 THEN 1 END) AS clue_wait_follow,
+            COUNT(CASE WHEN status = 3 THEN 1 END) AS clue_following,
+            COUNT(CASE WHEN status = 4 THEN 1 END) AS clue_false,
+            COUNT(CASE WHEN status = 5 THEN 1 END) AS clue_convert_business
+        FROM clue
+    </select>
 </mapper>

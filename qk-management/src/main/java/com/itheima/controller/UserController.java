@@ -1,9 +1,5 @@
 package com.itheima.controller;
 
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.LoggerFactory;
 import com.itheima.common.Result;
 import com.itheima.dto.UserDTO;
 import com.itheima.entity.PageResult;
@@ -14,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RequestMapping("/users")
 @RestController
 public class UserController {
@@ -30,7 +25,6 @@ public class UserController {
      */
     @GetMapping
     public Result getUsers(UserDTO userDTO) {
-        log.info("获取用户列表: {}", userDTO);
         PageResult<User> pageResult = userService.getUsers(userDTO);
         return Result.success(pageResult);
     }
@@ -42,7 +36,6 @@ public class UserController {
      */
     @DeleteMapping("/{ids}")
     public Result deleteUsers(@PathVariable("ids") List<Integer> ids) {
-        log.info("批量删除用户: {}", ids);
         userService.removeBatchByIds(ids);
         return Result.success();
     }
@@ -54,7 +47,6 @@ public class UserController {
      */
     @PostMapping
     public Result saveUser(@RequestBody User user) {
-        log.info("新增用户: {}", user);
         userService.addUser(user);
         return Result.success();
     }
@@ -66,7 +58,6 @@ public class UserController {
      */
     @GetMapping("/{id}")
     public Result findUserById(@PathVariable Long id) {
-        log.info("根据id获取用户: {}", id);
         User user = userService.getById(id);
         return Result.success(user);
     }
@@ -78,7 +69,6 @@ public class UserController {
      */
     @PutMapping
     public Result updateUser(@RequestBody User user) {
-        log.info("修改用户: {}", user);
         userService.updateById(user);
         return Result.success();
     }
@@ -89,7 +79,6 @@ public class UserController {
      */
     @GetMapping("/list")
     public Result getUserList() {
-        log.info("获取用户列表");
         List<User> userList = userService.list();
         return Result.success(userList);
     }
@@ -101,7 +90,6 @@ public class UserController {
      */
     @GetMapping("/role/{roleLabel}")
     public Result getUsersByRoleLabel(@PathVariable String roleLabel) {
-        log.info("根据角色标签获取用户列表: {}", roleLabel);
         List<User> userList = userService.getUsersByRoleLabel(roleLabel);
         return Result.success(userList);
     }
@@ -113,7 +101,6 @@ public class UserController {
      */
     @GetMapping("/dept/{deptId}")
     public Result getUsersByDeptId(@PathVariable Long deptId) {
-        log.info("根据部门id获取用户列表: {}", deptId);
         List<User> userList = userService.getUsersByDeptId(deptId);
         return Result.success(userList);
     }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.mapper.CustomerMapper">
+    <!--    客户分页条件查询    -->
+    <select id="findByPageAndCondition" resultType="com.itheima.entity.Customer">
+        SELECT c.*, co.name AS course_name FROM customer AS c
+        LEFT JOIN course AS co ON c.course_id = co.id
+        <where>
+            <if test="customerDTO.phone != null and customerDTO.phone != ''">
+                AND c.phone LIKE CONCAT('%', #{customerDTO.phone}, '%')
+            </if>
+            <if test="customerDTO.name != null and customerDTO.name != ''">
+                AND c.name LIKE CONCAT('%', #{customerDTO.name}, '%')
+            </if>
+            <if test="customerDTO.channel != null">
+                AND c.channel = #{customerDTO.channel}
+            </if>
+            <if test="customerDTO.subject != null">
+                AND c.subject = #{customerDTO.subject}
+            </if>
+        </where>
+        ORDER BY c.update_time DESC
+    </select>
+</mapper>

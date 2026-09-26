@@ -83,6 +83,12 @@ public class Customer {
     private Integer businessId;
 
     /**
+     * 意向课程名称（关联课程表查询，非表字段）
+     */
+    @TableField(exist = false)
+    private String courseName;
+
+    /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)

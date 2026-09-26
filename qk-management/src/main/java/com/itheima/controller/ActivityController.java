@@ -6,13 +6,11 @@ import com.itheima.dto.ActivityDTO;
 import com.itheima.entity.Activity;
 import com.itheima.entity.PageResult;
 import com.itheima.service.ActivityService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RequestMapping("/activities")
 @RestController
 public class ActivityController {
@@ -31,7 +29,6 @@ public class ActivityController {
      */
     @GetMapping
     public Result getActivities(ActivityDTO activityDTO) {
-        log.info("activityDTO: {}", activityDTO);
         PageResult<Activity> result = activityService.getActivities(activityDTO);
         return Result.success(result);
     }

@@ -5,11 +5,9 @@ import com.itheima.entity.Course;
 import com.itheima.entity.PageResult;
 import com.itheima.service.CourseService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
 @RestController
 public class CourseController {
     private final CourseService courseService;
@@ -36,7 +34,6 @@ public class CourseController {
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size
     ){
-        log.info("分页查询课程列表, 参数: name={}, subject={}, target={}, page={}, size={}", name, subject, target, page, size);
         PageResult pageResult = courseService.findCoursesByPage(name, subject, target, page, size);
         return Result.success(pageResult);
     }
@@ -48,7 +45,6 @@ public class CourseController {
      */
     @DeleteMapping("/courses/{id}")
     public Result deleteCourse(@PathVariable Integer id){
-        log.info("删除课程, 参数: id={}", id);
         courseService.deleteCourse(id);
         return Result.success();
     }
@@ -61,7 +57,6 @@ public class CourseController {
      */
     @PostMapping("/courses")
     public Result addCourse(@RequestBody Course course){
-        log.info("添加课程, 参数: {}", course);
         courseService.addCourse(course);
         return Result.success();
     }
@@ -73,7 +68,6 @@ public class CourseController {
      */
     @GetMapping("/courses/{id}")
     public Result getCourse(@PathVariable Integer id){
-        log.info("根据id查询课程, 参数: id={}", id);
         Course course = courseService.findById(id);
         return Result.success(course);
     }
@@ -85,7 +79,6 @@ public class CourseController {
      */
     @PutMapping("/courses")
     public Result updateCourse(@RequestBody Course course){
-        log.info("修改课程, 参数: {}", course);
         courseService.updateCourse(course);
         return Result.success();
     }
@@ -96,7 +89,6 @@ public class CourseController {
      */
     @GetMapping("/courses/list")
     public Result findAllCourse(){
-        log.info("查询所有课程");
         return Result.success(courseService.findAll());
     }
 
@@ -107,7 +99,6 @@ public class CourseController {
      */
     @GetMapping("/courses/subject/{subject}")
     public Result getCoursesBySubject(@PathVariable Integer subject){
-        log.info("根据科目查询课程, 参数: subject={}", subject);
         return Result.success(courseService.getCoursesBySubject(subject));
     }
 }

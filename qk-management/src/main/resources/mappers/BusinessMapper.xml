@@ -55,4 +55,16 @@
         LEFT JOIN user AS u ON b.user_id = u.id
         WHERE b.id = #{id}
     </select>
+
+    <!--    商机概览统计：总数与各状态数量，状态取值见 BusinessStatus    -->
+    <select id="getBusinessOverviewData" resultType="com.itheima.vo.OverviewVO">
+        SELECT
+            COUNT(*) AS business_total,
+            COUNT(CASE WHEN status = 1 THEN 1 END) AS business_wait_allot,
+            COUNT(CASE WHEN status = 2 THEN 1 END) AS business_wait_follow,
+            COUNT(CASE WHEN status = 3 THEN 1 END) AS business_following,
+            COUNT(CASE WHEN status = 4 THEN 1 END) AS business_false,
+            COUNT(CASE WHEN status = 5 THEN 1 END) AS business_convert_customer
+        FROM business
+    </select>
 </mapper>

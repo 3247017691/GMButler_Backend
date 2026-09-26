@@ -4,10 +4,17 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itheima.dto.BusinessDTO;
 import com.itheima.entity.Business;
+import com.itheima.vo.OverviewVO;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface BusinessMapper extends BaseMapper<Business> {
+
+    /**
+     * 统计商机概览数据（总数与各状态数量）
+     * @return
+     */
+    OverviewVO getBusinessOverviewData();
 
     /**
      * 商机分页条件查询（含负责人姓名）

@@ -3,8 +3,11 @@ package com.itheima.exception;
 import com.itheima.common.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 @Slf4j
@@ -35,5 +38,16 @@ public class GlobalExceptionHandler {
     public Result handleBizException(BizException e){
         log.error("发生业务异常", e);
         return Result.error(e.getMessage());
+    }
+
+    /**
+     * 请求的路径不存在（如后端尚未实现的接口），按404处理，避免当成未知异常打印堆栈
+     * @param e
+     * @return
+     */
+    @ExceptionHandler
+    public ResponseEntity<Result> handleNoResourceFoundException(NoResourceFoundException e){
+        log.warn("请求的资源不存在: {}", e.getResourcePath());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Result.error("请求的资源不存在"));
     }
 }

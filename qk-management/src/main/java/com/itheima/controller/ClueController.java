@@ -7,11 +7,9 @@ import com.itheima.dto.ClueFollowDTO;
 import com.itheima.entity.Clue;
 import com.itheima.entity.PageResult;
 import com.itheima.service.ClueService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
 @RestController
 @RequestMapping("/clues")
 public class ClueController {
@@ -31,7 +29,6 @@ public class ClueController {
      */
     @GetMapping
     public Result getClues(ClueDTO clueDTO) {
-        log.info("clueDTO: {}", clueDTO);
         PageResult<Clue> result = clueService.findByPageAndCondition(clueDTO);
         return Result.success(result);
     }
@@ -44,7 +41,6 @@ public class ClueController {
      */
     @GetMapping("/pool")
     public Result getCluePool(ClueDTO clueDTO) {
-        log.info("clueDTO: {}", clueDTO);
         PageResult<Clue> result = clueService.findPoolByPageAndCondition(clueDTO);
         return Result.success(result);
     }
@@ -81,7 +77,6 @@ public class ClueController {
      */
     @PutMapping
     public Result followClue(@RequestBody ClueFollowDTO clueFollowDTO) {
-        log.info("clueFollowDTO: {}", clueFollowDTO);
         clueService.follow(clueFollowDTO);
         return Result.success();
     }

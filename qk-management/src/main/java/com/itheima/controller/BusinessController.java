@@ -6,11 +6,9 @@ import com.itheima.dto.BusinessFollowDTO;
 import com.itheima.entity.Business;
 import com.itheima.entity.PageResult;
 import com.itheima.service.BusinessService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
 @RestController
 @RequestMapping("/businesses")
 public class BusinessController {
@@ -30,7 +28,6 @@ public class BusinessController {
      */
     @GetMapping
     public Result getBusinesses(BusinessDTO businessDTO) {
-        log.info("businessDTO: {}", businessDTO);
         PageResult<Business> result = businessService.findByPageAndCondition(businessDTO);
         return Result.success(result);
     }
@@ -43,7 +40,6 @@ public class BusinessController {
      */
     @GetMapping("/pool")
     public Result getBusinessPool(BusinessDTO businessDTO) {
-        log.info("businessDTO: {}", businessDTO);
         PageResult<Business> result = businessService.findPoolByPageAndCondition(businessDTO);
         return Result.success(result);
     }
@@ -68,7 +64,6 @@ public class BusinessController {
      */
     @PostMapping
     public Result saveBusiness(@RequestBody Business business) {
-        log.info("business: {}", business);
         businessService.addBusiness(business);
         return Result.success();
     }
@@ -81,7 +76,6 @@ public class BusinessController {
      */
     @PutMapping
     public Result followBusiness(@RequestBody BusinessFollowDTO businessFollowDTO) {
-        log.info("businessFollowDTO: {}", businessFollowDTO);
         businessService.follow(businessFollowDTO);
         return Result.success();
     }
