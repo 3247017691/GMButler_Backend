@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 商机实体类
@@ -113,4 +114,16 @@ public class Business {
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+
+    /**
+     * 负责人姓名（关联用户表查询，非表字段）
+     */
+    @TableField(exist = false)
+    private String assignName;
+
+    /**
+     * 跟进记录列表（关联商机跟进记录表查询，非表字段）
+     */
+    @TableField(exist = false)
+    private List<BusinessTrackRecord> trackRecords;
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.mapper.BusinessTrackRecordMapper">
+    <!--    根据商机ID查询跟进记录列表    -->
+    <select id="findByBusinessId" resultType="com.itheima.entity.BusinessTrackRecord">
+        SELECT t.*, u.name AS assign_name FROM business_track_record AS t
+        LEFT JOIN user AS u ON t.user_id = u.id
+        WHERE t.business_id = #{businessId}
+        ORDER BY t.create_time, t.id
+    </select>
+</mapper>

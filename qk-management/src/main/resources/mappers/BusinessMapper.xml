@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.mapper.BusinessMapper">
+    <!--    商机分页条件查询    -->
+    <select id="findByPageAndCondition" resultType="com.itheima.entity.Business">
+        SELECT b.*, u.name AS assign_name FROM business AS b
+        LEFT JOIN user AS u ON b.user_id = u.id
+        <where>
+            <if test="businessDTO.businessId != null">
+                AND b.id = #{businessDTO.businessId}
+            </if>
+            <if test="businessDTO.name != null and businessDTO.name != ''">
+                AND b.name LIKE CONCAT('%', #{businessDTO.name}, '%')
+            </if>
+            <if test="businessDTO.phone != null and businessDTO.phone != ''">
+                AND b.phone LIKE CONCAT('%', #{businessDTO.phone}, '%')
+            </if>
+            <if test="businessDTO.status != null">
+                AND b.status = #{businessDTO.status}
+            </if>
+            <if test="businessDTO.assignName != null and businessDTO.assignName != ''">
+                AND u.name LIKE CONCAT('%', #{businessDTO.assignName}, '%')
+            </if>
+            <if test="businessDTO.userId != null">
+                AND b.user_id = #{businessDTO.userId}
+            </if>
+        </where>
+        ORDER BY b.update_time DESC
+    </select>
+
+    <!--    商机公海池分页条件查询（回收状态）    -->
+    <select id="findPoolByPageAndCondition" resultType="com.itheima.entity.Business">
+        SELECT b.* FROM business AS b
+        <where>
+            AND b.status = 4
+            <if test="businessDTO.businessId != null">
+                AND b.id = #{businessDTO.businessId}
+            </if>
+            <if test="businessDTO.name != null and businessDTO.name != ''">
+                AND b.name LIKE CONCAT('%', #{businessDTO.name}, '%')
+            </if>
+            <if test="businessDTO.phone != null and businessDTO.phone != ''">
+                AND b.phone LIKE CONCAT('%', #{businessDTO.phone}, '%')
+            </if>
+            <if test="businessDTO.subject != null">
+                AND b.subject = #{businessDTO.subject}
+            </if>
+        </where>
+        ORDER BY b.update_time DESC
+    </select>
+
+    <!--    根据ID查询商机详情    -->
+    <select id="findDetailById" resultType="com.itheima.entity.Business">
+        SELECT b.*, u.name AS assign_name FROM business AS b
+        LEFT JOIN user AS u ON b.user_id = u.id
+        WHERE b.id = #{id}
+    </select>
+</mapper>

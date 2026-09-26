@@ -52,4 +52,22 @@ public enum BusinessStatus {
     public String getDesc() {
         return desc;
     }
+
+    /**
+     * 根据状态值获取枚举
+     *
+     * @param code
+     * @return 未匹配时返回 null
+     */
+    public static BusinessStatus of(Integer code) {
+        if (code == null) {
+            return null;
+        }
+        for (BusinessStatus status : values()) {
+            if (status.code == code) {
+                return status;
+            }
+        }
+        return null;
+    }
 }

@@ -40,8 +40,6 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
 
     /**
      * 新增线索（仅管理员）
-     *
-     * @param clue
      */
     @Override
     public void addClue(Clue clue) {
@@ -51,8 +49,6 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
 
     /**
      * 删除线索（仅管理员）
-     *
-     * @param id
      */
     @Override
     public void deleteClue(Integer id) {
@@ -66,9 +62,6 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
     /**
      * 条件分页查询线索列表
      * 管理员可查看全部线索；负责人强制按当前登录用户过滤，仅能看到自己负责的线索
-     *
-     * @param clueDTO
-     * @return
      */
     @Override
     public PageResult<Clue> findByPageAndCondition(ClueDTO clueDTO) {
@@ -85,9 +78,6 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
 
     /**
      * 条件分页查询线索池列表（仅管理员）
-     *
-     * @param clueDTO
-     * @return
      */
     @Override
     public PageResult<Clue> findPoolByPageAndCondition(ClueDTO clueDTO) {
@@ -102,9 +92,6 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
 
     /**
      * 根据ID查询线索详情（含跟进记录），负责人仅能看到自己负责的线索
-     *
-     * @param id
-     * @return
      */
     @Override
     public Clue getClueDetail(Integer id) {
@@ -123,9 +110,6 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
 
     /**
      * 为指定用户分配线索：线索状态变为待跟进（仅管理员）
-     *
-     * @param clueId
-     * @param userId
      */
     @Override
     public void assign(Integer clueId, Integer userId) {
@@ -151,8 +135,6 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
 
     /**
      * 跟进线索：更新线索并新增一条跟进记录（仅线索负责人）
-     *
-     * @param clueFollowDTO
      */
     @Override
     @Transactional
@@ -182,9 +164,6 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
 
     /**
      * 伪线索处理：线索状态变为伪线索并新增一条伪线索记录（仅线索负责人）
-     *
-     * @param id
-     * @param clueFalseDTO
      */
     @Override
     @Transactional
@@ -216,8 +195,6 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
 
     /**
      * 转商机处理：线索状态变为转为商机并新增一条商机数据（仅线索负责人）
-     *
-     * @param id
      */
     @Override
     @Transactional
@@ -250,9 +227,6 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
 
     /**
      * 是否为终态（伪线索或已转商机），终态线索不允许再分配/跟进
-     *
-     * @param status
-     * @return
      */
     private boolean isFinalStatus(Integer status) {
         ClueStatus clueStatus = ClueStatus.of(status);
@@ -280,9 +254,6 @@ public class ClueServiceImpl extends ServiceImpl<ClueMapper, Clue> implements Cl
 
     /**
      * 是否为可跟进的进行中状态（待跟进或跟进中）
-     *
-     * @param status
-     * @return
      */
     private boolean isFollowableStatus(Integer status) {
         ClueStatus clueStatus = ClueStatus.of(status);
